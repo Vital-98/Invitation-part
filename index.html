@@ -1,574 +1,314 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="mr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>महाप्रसाद आमंत्रण — चव्हाण परिवार</title>
-<meta name="description" content="गणपती उत्सव २०२६ — सत्यनारायण पूजा व महाप्रसाद. दिनांक २४ सप्टेंबर २०२६, गुरुवार, सायंकाळी ६:३०.">
-<meta name="theme-color" content="#cb3d2e">
-<link rel="icon" href="assets/ganesh-red.png">
+<meta name="theme-color" content="#FDFBF6">
+<title>महाप्रसाद आमंत्रण — श्री सुधाकरराव चव्हाण परिवार</title>
+<meta name="description" content="गणपती उत्सवा निमित्य सत्यनारायण पूजा व महाप्रसादाचे आमंत्रण — २४ सप्टेंबर २०२६, गुरुवार, सायंकाळी ६:३० पासून.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arya:wght@400;700&family=Tiro+Devanagari+Marathi&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   1. FOUR ANCHORS — the only thing that actually scrolls.
-      Empty and transparent: they drive the scrollbar, the snap
-      points and the #hash links. Everything visible is fixed.
-   ============================================================ */
-html, body { height: 100%; margin: 0; }
-body{
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-  overscroll-behavior-y: none;
-  background: #fdfaf4;
-  font-family: "Arya", "Noto Sans Devanagari", system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-.anchor{ height: 100svh; scroll-snap-align: start; scroll-snap-stop: always; }
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Tiro+Devanagari+Marathi&family=Eczar:wght@400;500;600&family=Mukta:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 
-:root{
-  --dur: .72s;
-  --ease: cubic-bezier(.76,0,.24,1);
-  --cream: #fdfaf4;
-  --red: #cb3d2e;
-  --red-deep: #a82c20;
-  --gold: #f6c85c;
-  --gold-soft: #ffe3a8;
-  --serif: "Arya", "Noto Sans Devanagari", system-ui, sans-serif;
-  --display: "Tiro Devanagari Marathi", "Noto Serif Devanagari", Georgia, serif;
-}
 
-/* ============================================================
-   2. THE STAGE — fixed, never scrolls. Holds the colour panels
-      and the four content screens.
-   ============================================================ */
-.stage{ position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-
-/* ---- 2a. colour panels: each wipes up over the one below ---- */
-.panel{
-  position: absolute; inset: 0;
-  clip-path: inset(100% 0 0 0);            /* hidden: top inset at 100% */
-  transition: clip-path var(--dur) var(--ease);
-  will-change: clip-path;
-}
-.panel.is-on{ clip-path: inset(0 0 0 0); } /* reveal: edge travels up */
-.panel:nth-child(1){ background: var(--cream); z-index: 1 }
-.panel:nth-child(2){ background: #fdfbf6; z-index: 2 }
-.panel:nth-child(3){ z-index: 3;
-  background:
-    radial-gradient(120% 70% at 50% 42%, #dd6b3c 0%, #d2482f 42%, #cb3d2e 70%, #c33827 100%); }
-.panel:nth-child(4){ z-index: 4;
-  background:
-    radial-gradient(90% 55% at 50% 30%, #e0713f 0%, #d2482f 45%, #c93b2b 75%, #bf3325 100%); }
-
-/* the blurred Ganpati photo, living inside panel 1 */
-.panel .bokeh{
-  position: absolute; inset: -6%;
-  background: url("assets/bokeh.jpg") center top / cover no-repeat;
-  opacity: .55;
-  filter: blur(10px) saturate(1.05);
-  transform: scale(1.06);
-}
-.panel .bokeh.faint{ opacity: .10; filter: blur(30px) saturate(.55) brightness(1.12); }
-.panel .veil.soft{
-  background: linear-gradient(180deg,
-    rgba(253,251,246,.55) 0%, rgba(253,251,246,.30) 40%, rgba(253,251,246,.92) 100%);
-}
-.panel .veil{
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg,
-    rgba(253,250,244,.62) 0%, rgba(253,250,244,.20) 34%,
-    rgba(253,250,244,.72) 72%, rgba(253,250,244,.97) 100%);
-}
-
-/* ============================================================
-   3. SCREENS — one per anchor, stacked, only the active one
-      is visible. Children stagger in behind the wipe edge.
-   ============================================================ */
-.screen{
-  position: absolute; inset: 0; z-index: 10;
-  display: grid; place-items: center;
-  opacity: 0; visibility: hidden;
-  transition: opacity .45s ease, visibility 0s linear .45s;
-}
-.screen.is-on{ opacity: 1; visibility: visible; transition: opacity .5s ease .18s; }
-.screen:nth-of-type(1){ z-index: 11 } .screen:nth-of-type(2){ z-index: 12 }
-.screen:nth-of-type(3){ z-index: 13 } .screen:nth-of-type(4){ z-index: 14 }
-
-.sheet{
-  width: min(92vw, 34rem);
-  max-height: 100svh;
-  padding: clamp(12px, 4svh, 34px) 0;
-  display: flex; flex-direction: column; align-items: center;
-  text-align: center;
-}
-
-/* stagger: every direct child of .sheet rises into place */
-.sheet > *{
-  opacity: 0; transform: translateY(18px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
-}
-.screen.is-on .sheet > *{ opacity: 1; transform: none; }
-.screen.is-on .sheet > :nth-child(1){ transition-delay: .26s }
-.screen.is-on .sheet > :nth-child(2){ transition-delay: .32s }
-.screen.is-on .sheet > :nth-child(3){ transition-delay: .38s }
-.screen.is-on .sheet > :nth-child(4){ transition-delay: .44s }
-.screen.is-on .sheet > :nth-child(5){ transition-delay: .50s }
-.screen.is-on .sheet > :nth-child(6){ transition-delay: .56s }
-.screen.is-on .sheet > :nth-child(7){ transition-delay: .62s }
-.screen.is-on .sheet > :nth-child(8){ transition-delay: .68s }
-
-/* ---- shared type ---- */
-.eyebrow{
-  font-family: var(--serif);
-  font-size: clamp(.95rem, 2.6vw, 1.15rem);
-  letter-spacing: .04em;
-}
-.hang{ display: flex; flex-direction: column; align-items: center; }
-.hang i{ display: block; width: 1px; height: clamp(26px, 5svh, 46px);
-  border-left: 1px dashed currentColor; opacity: .5 }
-.hang img{ width: clamp(14px, 3vw, 20px); margin-top: -2px }
-
-.title{
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: clamp(2.1rem, 8.6vw, 3.4rem);
-  line-height: 1.12;
-  letter-spacing: -.01em;
-  margin: 0;
-}
-.lede{
-  font-size: clamp(1rem, 3.5vw, 1.18rem);
-  line-height: 2;
-  margin: 0;
-  text-wrap: pretty;
-}
-.hairline{ width: min(42vw, 13rem); height: 1px; background: currentColor; opacity: .35 }
-
-/* ---- the swirl under the headline ---- */
-.swirl{ width: min(62vw, 20rem); display: block }
-.swirl path{
-  fill: none; stroke: var(--red); stroke-width: 5; stroke-linecap: round;
-  stroke-dasharray: 460; stroke-dashoffset: 460;
-  transition: stroke-dashoffset 1.1s var(--ease) .5s;
-}
-.screen.is-on .swirl path{ stroke-dashoffset: 0 }
-
-/* ---- screen 1: cream, red ink ---- */
-#s1{ color: var(--red) }
-.namah{
-  display: flex; align-items: center; gap: .7em;
-  font-family: var(--serif);
-  font-size: clamp(.9rem, 2.8vw, 1.05rem);
-  white-space: nowrap;
-}
-.namah::before, .namah::after{
-  content: ""; width: clamp(40px, 12vw, 92px); height: 1px;
-  background: linear-gradient(90deg, transparent, currentColor);
-}
-.namah::after{ background: linear-gradient(270deg, transparent, currentColor) }
-
-.facts{
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  width: 100%;
-  border: 1px solid rgba(203,61,46,.30);
-  border-radius: 14px;
-  background: rgba(255,255,255,.58);
-  backdrop-filter: blur(6px);
-  padding: clamp(12px, 2.4svh, 18px) 0;
-}
-.facts div + div{ border-left: 1px solid rgba(203,61,46,.22) }
-.facts dt{ font-size: .78rem; opacity: .72; margin-bottom: .25em; font-weight: 500 }
-.facts dd{ margin: 0; font-family: var(--serif); font-size: clamp(.95rem, 3.1vw, 1.12rem) }
-
-#t1{ font-family: var(--display); font-weight: 400 }
-.sender{ font-family: var(--serif); font-size: clamp(.95rem, 3vw, 1.1rem) }
-.ganesh-red{ width: clamp(62px, 16vw, 86px) }
-
-/* ---- screen 2: cream, ink ---- */
-#s2{ color: #8a2c20 }
-#s2 .lede{ color: #5d3b33 }
-.plea{
-  font-family: var(--serif);
-  color: var(--red);
-  font-size: clamp(1.02rem, 3.7vw, 1.22rem);
-  line-height: 1.75; margin: 0;
-}
-
-/* ---- buttons ---- */
-.btn{
-  pointer-events: auto;
-  display: inline-flex; align-items: center; justify-content: center; gap: .6em;
-  width: 100%;
-  padding: clamp(13px, 2.2svh, 17px) 22px;
-  border-radius: 999px;
-  font-family: var(--serif);
-  font-size: clamp(1rem, 3.3vw, 1.12rem);
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform .3s var(--ease), background-color .3s ease, box-shadow .3s ease;
-}
-.btn:active{ transform: scale(.985) }
-.btn-ghost{ border: 1px solid rgba(203,61,46,.45); color: var(--red); background: rgba(255,255,255,.5) }
-.btn-ghost:hover{ background: #fff; box-shadow: 0 10px 30px -14px rgba(203,61,46,.55) }
-.btn-gold{ background: var(--gold); color: #9a2d1c; border: 0; font-weight: 500;
-  box-shadow: 0 14px 34px -16px rgba(0,0,0,.55) }
-.btn-gold:hover{ background: #ffd775 }
-.btn svg{ width: 1.05em; height: 1.05em; flex: none }
-.chev{ transition: transform .5s var(--ease) }
-.btn:hover .chev{ transform: translateY(3px) }
-
-/* ---- screen 3: red, gold ---- */
-#s3{ color: var(--gold-soft) }
-.card{
-  position: relative;
-  width: 100%;
-  display: grid; grid-template-columns: auto 1fr; align-items: center;
-  gap: clamp(12px, 3.4vw, 18px);
-  text-align: left;
-  padding: clamp(12px, 2.3svh, 18px) clamp(14px, 4vw, 20px);
-  border: 1px solid rgba(255,225,170,.28);
-  border-radius: 14px;
-  background: rgba(255,255,255,.10);
-}
-.card .ico{
-  width: clamp(38px, 10vw, 46px); aspect-ratio: 1;
-  display: grid; place-items: center;
-  border-radius: 12px;
-  background: rgba(255,210,120,.18);
-  border: 1px solid rgba(255,225,170,.30);
-}
-.card .ico svg{ width: 55%; height: 55%; stroke: var(--gold); fill: none;
-  stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
-.card .k{ font-size: .8rem; opacity: .78; font-weight: 500 }
-.card .v{ font-family: var(--serif); color: #fff;
-  font-size: clamp(1.05rem, 4vw, 1.3rem); line-height: 1.35; margin: .08em 0 }
-.card .s{ font-size: clamp(.82rem, 2.9vw, .93rem); opacity: .82; line-height: 1.45 }
-
-/* ---- screen 4: red, gold ---- */
-#s4{ color: var(--gold-soft) }
-.ganesh-gold{ width: clamp(76px, 22vw, 118px) }
-.title-gold{ color: var(--gold); letter-spacing: .06em }
-.mantra{
-  display: flex; align-items: center; justify-content: center; gap: clamp(10px, 3vw, 20px);
-  font-family: var(--serif); color: #fff;
-  font-size: clamp(1rem, 3.6vw, 1.2rem);
-}
-.mantra img{ width: clamp(26px, 7vw, 38px) }
-
-/* ============================================================
-   4. CHROME — top bar with the rolling section name, the dot
-      nav on the right, and the drifting butterflies.
-   ============================================================ */
-.chrome{
-  position: absolute; inset: 0; z-index: 60;
-  color: var(--red);
-  transition: color .5s ease;
-}
-.stage[data-i="2"] .chrome, .stage[data-i="3"] .chrome{ color: var(--gold-soft) }
-
-.bar{
-  position: absolute; left: 0; right: 0; top: env(safe-area-inset-top, 0px);
-  display: flex; justify-content: space-between; align-items: baseline;
-  padding: clamp(14px,2.6vw,24px) clamp(16px,4.5vw,30px);
-  font-size: clamp(.72rem, 2.3vw, .84rem);
-  letter-spacing: .02em;
-}
-.wordmark{ display: flex; gap: .4em; align-items: baseline; font-weight: 500; opacity: .85 }
-
-/* WORD ROLL — a one-line mask. The leaving word slides up and
-   out, the arriving word slides up in from below, both at once. */
-.roll{ position: relative; display: inline-block; overflow: hidden;
-  vertical-align: bottom; line-height: 1.35 }
-.roll .w{ display: block; transition: transform var(--dur) var(--ease); will-change: transform }
-.roll .w:not(:first-child){ position: absolute; left: 0; top: 0 }
-.roll .w[data-state="prev"]{ transform: translateY(-140%) }
-.roll .w[data-state="next"]{ transform: translateY(140%) }
-.roll .w[data-state="on"]{ transform: translateY(0) }
-
-.count{ font-variant-numeric: tabular-nums; opacity: .7 }
-
-/* dot nav — the four beads on the right edge */
-.dots{
-  position: absolute; right: clamp(9px, 2.4vw, 18px); top: 50%;
-  transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: clamp(11px, 2.4vh, 16px);
-  margin: 0; padding: 0; list-style: none;
-}
-.dots a{
-  pointer-events: auto; display: block; padding: 5px; color: inherit;
-  -webkit-tap-highlight-color: transparent;
-}
-.dots a::before{
-  content: ""; display: block; width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor; opacity: .38;
-  transition: transform .45s var(--ease), opacity .45s ease;
-}
-.dots a[aria-current="true"]::before{ transform: scale(1.75); opacity: 1 }
-
-.side{
-  position: absolute; left: clamp(8px, 2.2vw, 16px); top: 50%;
-  transform: translateY(-50%) rotate(180deg);
-  writing-mode: vertical-rl;
-  font-size: .62rem; letter-spacing: .22em; text-transform: uppercase;
-  opacity: .5;
-  transition: opacity .4s ease;
-}
-.stage[data-i="3"] .side{ opacity: 0 }
-
-/* butterflies: decorative, drifting, per-screen */
-.flutter{ position: absolute; inset: 0; z-index: 20; pointer-events: none; overflow: hidden }
-.flutter img{
-  position: absolute; width: var(--w, 46px);
-  opacity: 0; transform: translateY(20px) scale(.9);
-  transition: opacity .8s ease, transform .9s var(--ease);
-}
-.screen.is-on .flutter img{ opacity: var(--o, .9); transform: none;
-  animation: drift 7s ease-in-out infinite alternate }
-.screen.is-on .flutter img:nth-child(2){ animation-duration: 9s; animation-delay: -3s }
-.screen.is-on .flutter img:nth-child(3){ animation-duration: 8s; animation-delay: -5s }
-@keyframes drift{
-  from{ transform: translate3d(0,0,0) rotate(-2deg) }
-  to  { transform: translate3d(4px,-12px,0) rotate(3deg) }
-}
-
-@media (max-height: 700px){
-  .sheet{ gap: 0 }
-  .lede{ line-height: 1.85 }
-}
-@media (prefers-reduced-motion: reduce){
-  :root{ --dur: .001s }
-  body{ scroll-behavior: auto; scroll-snap-type: y proximity }
-  .screen.is-on .flutter img{ animation: none }
-  .swirl path{ stroke-dashoffset: 0 }
-}
-</style>
+<!-- set before the body paints, so there is no flash of the fallback -->
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
 
-<!-- 1. the four anchors: the only scrolling thing on the page -->
-<section class="anchor" id="one"   aria-label="महाप्रसाद आमंत्रण"></section>
-<section class="anchor" id="two"   aria-label="आमंत्रण"></section>
-<section class="anchor" id="three" aria-label="तपशील"></section>
-<section class="anchor" id="four"  aria-label="श्री गणेश"></section>
+<!-- ══════════════════════════════════════════════════════════════
+     1 · FOUR ANCHORS — the only thing that actually scrolls.
+     Empty and transparent: they exist to drive the scrollbar, the
+     snap points and the #hash links. `scroll-snap-stop: always`
+     is what forbids a flick from carrying past a view.
+     ══════════════════════════════════════════════════════════════ -->
+<section class="anchor" id="welcome"></section>
+<section class="anchor" id="invite"></section>
+<section class="anchor" id="details"></section>
+<section class="anchor" id="closing"></section>
 
-<!-- 2. the fixed stage -->
-<div class="stage" data-i="0">
+<div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
 
-  <!-- 2a. colour panels -->
-  <div class="panel is-on"><div class="bokeh"></div><div class="veil"></div></div>
-  <div class="panel"><div class="bokeh faint"></div><div class="veil soft"></div></div>
-  <div class="panel"></div>
-  <div class="panel"></div>
+<!-- ══════════════════════════════════════════════════════════════
+     2 · THE STAGE — fixed, never scrolls. Everything you see is here.
+     ══════════════════════════════════════════════════════════════ -->
+<div class="stage">
 
-  <!-- 2b. screen one — the invitation -->
-  <section class="screen is-on" id="s1" aria-labelledby="t1">
-    <div class="flutter">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(42px,11vw,62px);--o:.85; left:6%; top:14%">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(34px,9vw,50px);--o:.7; right:7%; top:27%">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(30px,8vw,44px);--o:.6; right:9%; bottom:22%">
-    </div>
-    <div class="sheet" style="gap: clamp(10px,2.2svh,20px)">
-      <div class="hang"><i></i><img src="assets/bell-red.png" alt=""></div>
-      <p class="namah">॥ श्री गणेशाय नमः ॥</p>
-      <h1 class="title" id="t1">महाप्रसाद<br>आमंत्रण</h1>
-      <svg class="swirl" viewBox="0 0 320 26" aria-hidden="true">
-        <path d="M6 18 C 60 4, 104 2, 160 13 C 216 24, 262 22, 314 9"/>
-      </svg>
-      <dl class="facts">
-        <div><dt>दिनांक</dt><dd>२४ सप्टेंबर २०२६</dd></div>
-        <div><dt>वार</dt><dd>गुरुवार</dd></div>
-        <div><dt>वेळ</dt><dd>सं. ६:३०</dd></div>
-      </dl>
-      <img class="ganesh-red" src="assets/ganesh-red.png" alt="श्री गणेश">
-      <p class="sender">प्रेषक : श्री सुधाकरराव चव्हाण परिवार.</p>
-    </div>
-  </section>
+  <!-- 2a · the idol ground, seen through the transparent first panel -->
+  <div class="ground" aria-hidden="true">
+    <div class="stage__glow"></div>
 
-  <!-- 2c. screen two — the request -->
-  <section class="screen" id="s2" aria-labelledby="t2">
-    <div class="flutter">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(40px,10vw,58px);--o:.8; left:7%; top:16%">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(44px,11vw,62px);--o:.75; right:5%; top:30%">
-      <img src="assets/butterfly-red.png" alt="" style="--w:clamp(36px,9vw,52px);--o:.7; right:8%; bottom:24%">
-    </div>
-    <div class="sheet" style="gap: clamp(12px,2.6svh,22px)">
-      <p class="eyebrow" id="t2">आमंत्रण</p>
-      <div class="hang"><i></i><img src="assets/bell-red.png" alt=""></div>
-      <p class="lede">
-        दरवर्षी प्रमाणे यंदाही आमच्या येथे आनंदमयी वातावरणात गणपती बाप्पांचं आगमन
-        झालेलं आहे. गणपती उत्सवा निमित्य आमच्या येथे दिनांक २४/०९/२६, गुरुवार रोजी
-        सत्यनारायण पूजा व महाप्रसादाचे आयोजन करण्यात आले आहे. आपणास विनंती आहे की
-        आपण सहपरिवार येऊन या महाप्रसादाचा आस्वाद घ्यावा.
-      </p>
-      <div class="hairline"></div>
-      <p class="plea">कृपया हेच हृदयस्थ वैयक्तिक आमंत्रण समजून, जरूर येणे करावे.</p>
-      <a class="btn btn-ghost" href="#three">
-        दिनांक, वेळ व स्थळ
-        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-      </a>
-    </div>
-  </section>
+    <img class="stage__photo" src="idol.jpeg" alt="" decoding="async" fetchpriority="high">
 
-  <!-- 2d. screen three — the details -->
-  <section class="screen" id="s3" aria-labelledby="t3">
-    <div class="flutter">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(40px,10vw,56px);--o:.85; left:7%; top:15%">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(44px,11vw,60px);--o:.7; right:6%; top:26%">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(38px,9vw,54px);--o:.75; right:6%; bottom:20%">
-    </div>
-    <div class="sheet" style="gap: clamp(10px,2svh,16px)">
-      <p class="eyebrow" id="t3">तपशील</p>
-      <div class="hang"><i></i><img src="assets/bell-red.png" alt=""></div>
+    <video class="stage__video" playsinline muted loop preload="auto" autoplay disablepictureinpicture>
+      <source src="assets/video/idol.webm" type="video/webm">
+      <source src="assets/video/idol.mp4" type="video/mp4">
+    </video>
 
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
-        <div><p class="k">दिनांक</p><p class="v">२४ सप्टेंबर २०२६</p><p class="s">गुरुवार</p></div>
-      </div>
+    <svg class="stage__idol" viewBox="0 0 400 560" preserveAspectRatio="xMidYMid meet" focusable="false">
+      <g fill="none" stroke="#EB4E40" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="200" cy="250" r="196" stroke="#F08A7A" stroke-width="1.6" opacity="0.5"></circle>
+        <circle cx="200" cy="250" r="176" stroke="#F08A7A" stroke-width="1" stroke-dasharray="2 9" opacity="0.55"></circle>
+        <circle cx="200" cy="12" r="5.5" fill="#EB4E40" stroke="none"></circle>
+        <path d="M200 20 L200 36"></path>
+        <path d="M200 36 C 236 54 256 98 252 136 L148 136 C 144 98 164 54 200 36 Z" fill="rgba(235,78,64,0.14)"></path>
+        <path d="M200 54 L200 136"></path>
+        <path d="M177 68 C 176 102 173 122 169 136"></path>
+        <path d="M223 68 C 224 102 227 122 231 136"></path>
+        <path d="M138 136 L262 136 L266 158 L134 158 Z" fill="rgba(235,78,64,0.18)"></path>
+        <circle cx="200" cy="147" r="5" fill="#EB4E40" stroke="none"></circle>
+        <circle cx="172" cy="147" r="3.2" fill="#EB4E40" stroke="none"></circle>
+        <circle cx="228" cy="147" r="3.2" fill="#EB4E40" stroke="none"></circle>
+        <path d="M146 176 C 104 166 68 190 64 234 C 60 280 96 312 140 300 C 128 268 126 212 146 176 Z" fill="rgba(235,78,64,0.1)"></path>
+        <path d="M254 176 C 296 166 332 190 336 234 C 340 280 304 312 260 300 C 272 268 274 212 254 176 Z" fill="rgba(235,78,64,0.1)"></path>
+        <path d="M136 200 C 110 202 92 226 94 250 C 96 276 116 290 136 286" stroke-width="2"></path>
+        <path d="M264 200 C 290 202 308 226 306 250 C 304 276 284 290 264 286" stroke-width="2"></path>
+        <path d="M148 158 C 126 186 124 238 138 274 C 152 310 176 330 200 330 C 224 330 248 310 262 274 C 276 238 274 186 252 158 Z" fill="rgba(253,251,246,0.35)"></path>
+        <path d="M200 176 L200 214" stroke="#A82C1E" stroke-width="3.6"></path>
+        <path d="M189 184 C 189 206 211 206 211 184" stroke="#A82C1E" stroke-width="3.2"></path>
+        <path d="M161 248 C 169 237 187 237 195 248" stroke-width="2.6"></path>
+        <path d="M205 248 C 213 237 231 237 239 248" stroke-width="2.6"></path>
+        <circle cx="178" cy="246" r="3" fill="#A82C1E" stroke="none"></circle>
+        <circle cx="222" cy="246" r="3" fill="#A82C1E" stroke="none"></circle>
+        <path d="M166 318 C 159 332 156 348 158 362" stroke-width="5"></path>
+        <path d="M234 318 C 241 332 244 348 242 362" stroke-width="5"></path>
+        <path d="M200 262 C 205 306 200 348 178 372 C 155 397 122 390 116 365 C 111 344 129 331 143 342" stroke-width="13" stroke="#EB4E40"></path>
+        <path d="M84 474 C 92 408 138 370 200 370 C 262 370 308 408 316 474" stroke-width="3.2"></path>
+        <path d="M120 492 C 152 470 248 470 280 492 C 256 516 144 516 120 492 Z" fill="rgba(235,78,64,0.12)"></path>
+        <path d="M156 476 C 158 494 162 504 168 510"></path>
+        <path d="M244 476 C 242 494 238 504 232 510"></path>
+        <path d="M200 470 L200 510"></path>
+      </g>
+    </svg>
 
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/><path d="M12 7v5.5l3.5 2"/></svg></span>
-        <div><p class="k">वेळ</p><p class="v">सायंकाळी ६:३०</p><p class="s">पासून आपल्या आगमना पर्यंत</p></div>
-      </div>
-
-      <div class="card">
-        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
-        <div><p class="k">स्थळ</p><p class="v">आमचे राहते घरी, “सुधानंद”</p>
-          <p class="s">८४, जूना सुभेदार लेआऊट विस्तारित, नागपूर – २४</p></div>
-      </div>
-
-      <a class="btn btn-gold" target="_blank" rel="noopener"
-         href="https://www.google.com/maps/search/?api=1&amp;query=84%2C%20Juna%20Subhedar%20Layout%20Extension%2C%20Nagpur%20440024">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>
-        नकाशावर स्थळ पहा
-      </a>
-    </div>
-  </section>
-
-  <!-- 2e. screen four — the blessing -->
-  <section class="screen" id="s4" aria-labelledby="t4">
-    <div class="flutter">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(38px,9vw,52px);--o:.8; left:8%; top:18%">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(42px,10vw,56px);--o:.7; right:7%; top:24%">
-      <img src="assets/butterfly-gold.png" alt="" style="--w:clamp(40px,10vw,54px);--o:.75; right:8%; bottom:22%">
-    </div>
-    <div class="sheet" style="gap: clamp(12px,2.6svh,22px)">
-      <img class="ganesh-gold" src="assets/ganesh-gold.png" alt="">
-      <h2 class="title title-gold" id="t4">श्री गणेश</h2>
-      <div class="hairline"></div>
-      <p class="mantra">
-        <img src="assets/diya-gold.png" alt="">
-        ॥ गणपती बाप्पा मोरया ॥
-        <img src="assets/diya-gold.png" alt="">
-      </p>
-    </div>
-  </section>
-
-  <!-- 2f. chrome -->
-  <div class="chrome">
-    <div class="bar">
-      <div class="wordmark">
-        <span>चव्हाण परिवार</span>
-        <span>·</span>
-        <span class="roll" data-roll>
-          <span class="w" data-state="on">आमंत्रण</span>
-          <span class="w" data-state="next">विनंती</span>
-          <span class="w" data-state="next">तपशील</span>
-          <span class="w" data-state="next">आशीर्वाद</span>
-        </span>
-      </div>
-      <div class="count"><span data-cur>०१</span> / ०४</div>
-    </div>
-
-    <span class="side" data-scroll-hint>स्क्रोल करा</span>
-
-    <nav aria-label="पडदे">
-      <ul class="dots">
-        <li><a href="#one"   aria-current="true"><span class="sr-only"></span></a></li>
-        <li><a href="#two"></a></li>
-        <li><a href="#three"></a></li>
-        <li><a href="#four"></a></li>
-      </ul>
-    </nav>
+    <div class="stage__sweep"></div>
+    <div class="stage__veil"></div>
+    <div class="stage__vignette"></div>
   </div>
+
+  <!-- 2b · the colour panels: each wipes up over the one before -->
+  <div class="panel panel--1 is-on" aria-hidden="true"></div>
+  <div class="panel panel--2 is-red" aria-hidden="true"></div>
+  <div class="panel panel--3" aria-hidden="true"></div>
+  <div class="panel panel--4 is-red" aria-hidden="true"></div>
+
+  <!-- 2c · embers and butterflies drift over every panel -->
+  <div class="ambient" aria-hidden="true">
+    <div class="embers">
+      <i style="--x: 9%;  --s: 4px; --t: -1.2s; --dur: 9s"></i>
+      <i style="--x: 93%; --s: 3px; --t: -4.8s; --dur: 11s"></i>
+      <i style="--x: 14%; --s: 3px; --t: -6.9s; --dur: 10s"></i>
+      <i style="--x: 88%; --s: 4px; --t: -3.1s; --dur: 12s"></i>
+    </div>
+
+    <div class="flutter">
+      <span class="bfly"          style="--x: 4%;  --y: 16%; --t: -0.7s; --sz: 54px"></span>
+      <span class="bfly bfly--b"  style="--x: 92%; --y: 26%; --t: -5.4s; --sz: 42px"></span>
+      <span class="bfly bfly--c"  style="--x: 6%;  --y: 74%; --t: -9.6s; --sz: 36px"></span>
+      <span class="bfly bfly--b"  style="--x: 90%; --y: 82%; --t: -2.9s; --sz: 38px"></span>
+    </div>
+  </div>
+
+  <!-- 2d · the four views, revealed by the same rising edge -->
+    <div class="view view--welcome" data-view="0">
+
+      <div class="bells" aria-hidden="true">
+        <div class="bell-hang" style="--x: 11%; --len: 62px; --t: -1.4s; --sz: 44px">
+          <span class="bell-hang__chain"></span>
+          <svg class="bell" viewBox="0 0 64 100" aria-hidden="true" focusable="false">
+          <circle class="bell__knob" cx="32" cy="27" r="4.2"></circle>
+          <path class="bell__body" d="M32 30 C 22 31 17 44 16 60 C 15.5 65 12 68 9 70 L 55 70 C 52 68 48.5 65 48 60 C 47 44 42 31 32 30 Z"></path>
+          <path class="bell__shine" d="M25.5 40 C 22 46 21 53 21 60"></path>
+          <path class="bell__rim" d="M8 70 H56 V75.5 a3.5 3.5 0 0 1 -3.5 3.5 H11.5 A3.5 3.5 0 0 1 8 75.5 Z"></path>
+          <line class="bell__rod" x1="32" y1="79" x2="32" y2="87"></line>
+          <circle class="bell__clapper" cx="32" cy="91" r="4.6"></circle>
+        </svg>
+        </div>
+        <div class="bell-hang bell-hang--b" style="--x: 89%; --len: 88px; --t: -3.1s; --sz: 38px">
+          <span class="bell-hang__chain"></span>
+          <svg class="bell" viewBox="0 0 64 100" aria-hidden="true" focusable="false">
+          <circle class="bell__knob" cx="32" cy="27" r="4.2"></circle>
+          <path class="bell__body" d="M32 30 C 22 31 17 44 16 60 C 15.5 65 12 68 9 70 L 55 70 C 52 68 48.5 65 48 60 C 47 44 42 31 32 30 Z"></path>
+          <path class="bell__shine" d="M25.5 40 C 22 46 21 53 21 60"></path>
+          <path class="bell__rim" d="M8 70 H56 V75.5 a3.5 3.5 0 0 1 -3.5 3.5 H11.5 A3.5 3.5 0 0 1 8 75.5 Z"></path>
+          <line class="bell__rod" x1="32" y1="79" x2="32" y2="87"></line>
+          <circle class="bell__clapper" cx="32" cy="91" r="4.6"></circle>
+        </svg>
+        </div>
+      </div>
+
+      <div class="view__inner">
+
+        <header class="salutation rv" style="--d: .1s">
+          <span class="rule rule--fade-r" aria-hidden="true"></span>
+          <svg class="star" viewBox="0 0 36 22" aria-hidden="true" focusable="false">
+          <path d="M18 1.5 C 21.4 7 22.4 12.4 18 20.5 C 13.6 12.4 14.6 7 18 1.5 Z"></path>
+          <path d="M18 20.5 C 11.8 17.6 6.6 12.4 4.4 5 C 10.6 6.2 15.6 11.4 18 20.5 Z" opacity=".78"></path>
+          <path d="M18 20.5 C 24.2 17.6 29.4 12.4 31.6 5 C 25.4 6.2 20.4 11.4 18 20.5 Z" opacity=".78"></path>
+        </svg>
+          <span class="rule rule--fade-l" aria-hidden="true"></span>
+          <p class="salutation__text">॥ श्री गणेशाय नमः ॥</p>
+        </header>
+
+        <div class="hero">
+          <h1 class="hero__title rv" style="--d: .35s">महाप्रसाद आमंत्रण</h1>
+
+          <svg class="swash rv rv--draw" style="--d: .5s" viewBox="0 0 260 34" aria-hidden="true" focusable="false">
+            <path d="M4 20 C 40 4 78 30 128 16 C 176 3 214 24 256 10 C 214 32 172 12 126 24 C 78 36 40 12 4 20 Z"/>
+            <path d="M104 30 C 118 26 132 27 146 31 C 132 30 118 31 104 30 Z" opacity=".55"/>
+          </svg>
+
+
+          <dl class="pill rv" style="--d: .6s">
+            <div><dt>दिनांक</dt><dd>२४ सप्टेंबर २०२६</dd></div>
+            <div><dt>वार</dt><dd>गुरुवार</dd></div>
+            <div><dt>वेळ</dt><dd>सं. ६:३०</dd></div>
+          </dl>
+
+          <a class="mark rv" style="--d: .7s" href="#invite" data-scroll aria-label="आमंत्रण वाचा">
+            <span class="mark__glyph"></span>
+          </a>
+
+          <p class="sender rv" style="--d: .8s">प्रेषक : श्री सुधाकरराव चव्हाण परिवार.</p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="view view--invite theme-red" data-view="1">
+      <div class="view__inner">
+        <p class="label rv">आमंत्रण</p>
+        <span class="drop rv rv--drop" aria-hidden="true">
+          <span class="drop__chain"></span>
+          <svg class="bell bell--sm" viewBox="0 0 64 100" focusable="false">
+            <circle class="bell__knob" cx="32" cy="27" r="4.2"></circle>
+            <path class="bell__body" d="M32 30 C 22 31 17 44 16 60 C 15.5 65 12 68 9 70 L 55 70 C 52 68 48.5 65 48 60 C 47 44 42 31 32 30 Z"></path>
+            <path class="bell__rim" d="M8 70 H56 V75.5 a3.5 3.5 0 0 1 -3.5 3.5 H11.5 A3.5 3.5 0 0 1 8 75.5 Z"></path>
+            <line class="bell__rod" x1="32" y1="79" x2="32" y2="87"></line>
+            <circle class="bell__clapper" cx="32" cy="91" r="4.6"></circle>
+          </svg>
+        </span>
+
+        <p class="prose rv" style="--d: .1s">दरवर्षी प्रमाणे यंदाही आमच्या येथे आनंदमयी वातावरणात गणपती बाप्पांचं आगमन झालेलं आहे. गणपती उत्सवा निमित्य आमच्या येथे दिनांक २४/०९/२६, गुरुवार रोजी सत्यनारायण पूजा व महाप्रसादाचे आयोजन करण्यात आले आहे. आपणास विनंती आहे की आपण सहपरिवार येऊन या महाप्रसादाचा आस्वाद घ्यावा.</p>
+
+        <span class="rule rule--short rv rv--draw" style="--d: .2s" aria-hidden="true"></span>
+
+        <p class="prose prose--gold rv" style="--d: .25s">कृपया हेच हृदयस्थ वैयक्तिक आमंत्रण समजून, जरूर येणे करावे.</p>
+
+
+        <a class="btn btn--ghost rv" style="--d: .45s" href="#details" data-scroll>
+          दिनांक, वेळ व स्थळ
+          <svg class="chev" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M3 6 L8 11 L13 6"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="view view--details" data-view="2">
+      <div class="view__inner">
+        <p class="label rv">तपशील</p>
+        <span class="drop rv rv--drop" aria-hidden="true">
+          <span class="drop__chain"></span>
+          <svg class="bell bell--sm" viewBox="0 0 64 100" focusable="false">
+            <circle class="bell__knob" cx="32" cy="27" r="4.2"></circle>
+            <path class="bell__body" d="M32 30 C 22 31 17 44 16 60 C 15.5 65 12 68 9 70 L 55 70 C 52 68 48.5 65 48 60 C 47 44 42 31 32 30 Z"></path>
+            <path class="bell__rim" d="M8 70 H56 V75.5 a3.5 3.5 0 0 1 -3.5 3.5 H11.5 A3.5 3.5 0 0 1 8 75.5 Z"></path>
+            <line class="bell__rod" x1="32" y1="79" x2="32" y2="87"></line>
+            <circle class="bell__clapper" cx="32" cy="91" r="4.6"></circle>
+          </svg>
+        </span>
+
+        <ul class="cards">
+          <li class="card rv" style="--d: .05s">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10 L21 10 M8 3 L8 7 M16 3 L16 7"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__label">दिनांक</span>
+              <span class="card__value">२४ सप्टेंबर २०२६</span>
+              <span class="card__note">गुरुवार</span>
+            </span>
+          </li>
+          <li class="card rv" style="--d: .15s">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 7 L12 12 L15.5 14"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__label">वेळ</span>
+              <span class="card__value">सायंकाळी ६:३०</span>
+              <span class="card__note">पासून आपल्या आगमना पर्यंत</span>
+            </span>
+          </li>
+          <li class="card card--top rv" style="--d: .25s">
+            <span class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false"><path d="M12 21.5 C 12 21.5 19 14.8 19 9.8 A7 7 0 0 0 5 9.8 C 5 14.8 12 21.5 12 21.5 Z"/><circle cx="12" cy="9.8" r="2.6"/></svg>
+            </span>
+            <span class="card__body">
+              <span class="card__label">स्थळ</span>
+              <span class="card__value">आमचे राहते घरी, &ldquo;सुधानंद&rdquo;</span>
+              <span class="card__note">८४, जूना सुभेदार लेआऊट विस्तारित, नागपूर – २४</span>
+            </span>
+          </li>
+        </ul>
+
+        <a class="btn btn--solid rv" style="--d: .35s" id="map-link" href="#" target="_blank" rel="noopener">
+          <svg class="pin" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21.5 C 12 21.5 19 14.8 19 9.8 A7 7 0 0 0 5 9.8 C 5 14.8 12 21.5 12 21.5 Z"/><circle cx="12" cy="9.8" r="2.6"/></svg>
+          नकाशावर स्थळ पहा
+        </a>
+
+      </div>
+    </div>
+
+    <div class="view view--closing theme-red" data-view="3">
+      <div class="view__inner view__inner--center">
+        <svg class="rangoli" viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+        <defs>
+          <path id="petal" d="M100 100 C 87 74 87 46 100 18 C 113 46 113 74 100 100 Z"></path>
+        </defs>
+        <g>
+          <use href="#petal" transform="rotate(0 100 100)"></use>
+          <use href="#petal" transform="rotate(22.5 100 100)"></use>
+          <use href="#petal" transform="rotate(45 100 100)"></use>
+          <use href="#petal" transform="rotate(67.5 100 100)"></use>
+          <use href="#petal" transform="rotate(90 100 100)"></use>
+          <use href="#petal" transform="rotate(112.5 100 100)"></use>
+          <use href="#petal" transform="rotate(135 100 100)"></use>
+          <use href="#petal" transform="rotate(157.5 100 100)"></use>
+          <use href="#petal" transform="rotate(180 100 100)"></use>
+          <use href="#petal" transform="rotate(202.5 100 100)"></use>
+          <use href="#petal" transform="rotate(225 100 100)"></use>
+          <use href="#petal" transform="rotate(247.5 100 100)"></use>
+          <use href="#petal" transform="rotate(270 100 100)"></use>
+          <use href="#petal" transform="rotate(292.5 100 100)"></use>
+          <use href="#petal" transform="rotate(315 100 100)"></use>
+          <use href="#petal" transform="rotate(337.5 100 100)"></use>
+        </g>
+        <circle cx="100" cy="100" r="30"></circle>
+        <circle cx="100" cy="100" r="41" stroke-dasharray="1.5 7"></circle>
+        <circle cx="100" cy="100" r="92" stroke-dasharray="3 10" opacity=".7"></circle>
+      </svg>
+      <span class="swirl" aria-hidden="true"></span>
+      </div>
+    </div>
+
 </div>
 
-<script>
-(() => {
-  const stage   = document.querySelector('.stage');
-  const anchors = [...document.querySelectorAll('.anchor')];
-  const panels  = [...document.querySelectorAll('.panel')];
-  const screens = [...document.querySelectorAll('.screen')];
-  const links   = [...document.querySelectorAll('.dots a')];
-  const rolls   = [...document.querySelectorAll('[data-roll]')];
-  const counter = document.querySelector('[data-cur]');
-  const NUM     = ['०१','०२','०३','०४'];
-  let current = -1;
+<!-- butterfly and bell geometry -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="bellGrad" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#F4877A"></stop>
+      <stop offset="0.5" stop-color="#EB4E40"></stop>
+      <stop offset="1" stop-color="#C23526"></stop>
+    </linearGradient>
+    <linearGradient id="bellGradGold" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFF0C8"></stop>
+      <stop offset="0.5" stop-color="#F6C95C"></stop>
+      <stop offset="1" stop-color="#D9A63C"></stop>
+    </linearGradient>
+  </defs>
+</svg>
 
-  /* One function drives everything: panels, screens, words, dots, hash. */
-  function setActive(i){
-    if (i === current || i < 0) return;
-    current = i;
-
-    // panels 0..i are down; everything above stays clipped away
-    panels.forEach((p, n) => p.classList.toggle('is-on', n <= i));
-    screens.forEach((s, n) => s.classList.toggle('is-on', n === i));
-
-    // words: past ones parked above, future ones waiting below
-    rolls.forEach(r => [...r.children].forEach((w, n) => {
-      w.dataset.state = n < i ? 'prev' : n > i ? 'next' : 'on';
-    }));
-
-    links.forEach((a, n) => a.setAttribute('aria-current', String(n === i)));
-    counter.textContent = NUM[i];
-    stage.dataset.i = i;
-    history.replaceState(null, '', '#' + anchors[i].id);
-  }
-
-  /* The roll mask must track the active word, or it would reserve
-     space for the longest one forever. */
-  function sizeRolls(){
-    rolls.forEach(r => {
-      const on = r.querySelector('[data-state="on"]');
-      if (on) r.style.width = on.getBoundingClientRect().width + 'px';
-    });
-  }
-  new ResizeObserver(sizeRolls).observe(document.body);
-  document.fonts?.ready.then(sizeRolls);
-
-  const io = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting){ setActive(anchors.indexOf(e.target)); sizeRolls(); } });
-  }, { threshold: 0.55 });
-  anchors.forEach(a => io.observe(a));
-
-  const goto = i => anchors[Math.max(0, Math.min(anchors.length - 1, i))]
-    ?.scrollIntoView({ behavior: 'smooth' });
-
-  addEventListener('keydown', e => {
-    const step = { ArrowDown:1, PageDown:1, ' ':1, ArrowUp:-1, PageUp:-1 }[e.key];
-    if (step === undefined || e.metaKey || e.ctrlKey || e.altKey) return;
-    e.preventDefault();
-    goto(current + step);
-  });
-  addEventListener('keydown', e => {
-    if (e.key === 'Home'){ e.preventDefault(); goto(0); }
-    if (e.key === 'End'){ e.preventDefault(); goto(anchors.length - 1); }
-  });
-
-  // honour a deep link like /#three on load
-  const start = anchors.findIndex(a => '#' + a.id === location.hash);
-  setActive(start < 0 ? 0 : start);
-  sizeRolls();
-  if (start > 0) anchors[start].scrollIntoView();
-})();
-</script>
+<script src="app.js"></script>
 </body>
 </html>

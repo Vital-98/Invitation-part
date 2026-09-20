@@ -1,0 +1,660 @@
+/* ───────────────────────────────────────────────
+   गणपती आमंत्रण — four snapped views, alternating themes
+   views 1 & 3: ivory ground, vermilion type
+   views 2 & 4: vermilion ground, gold type
+   ─────────────────────────────────────────────── */
+
+:root {
+  /* ── theme tokens: ivory (default) ── */
+  --bg:           #FDFBF6;
+  --fg:           #2E2A22;
+  --fg-soft:      #3A342A;
+  --fg-muted:     #6B6355;
+  --ac:           #EB4E40;      /* display type, rules, ornament (3.6:1) */
+  --ac-deep:      #CC3B2A;      /* borders, icons, solid button          */
+  --ac-text:      #A82C1E;      /* small text (6.7:1)                    */
+  --ac-dark:      #8F2416;
+  --line:         rgba(235, 78, 64, 0.34);
+  --line-2:       rgba(235, 78, 64, 0.5);
+  --card-bg:      rgba(255, 255, 255, 0.92);
+  --card-icon-bg: rgba(235, 78, 64, 0.10);
+  --btn-fg:       #FFFFFF;
+  --btn-bg:       #CC3B2A;
+  --ghost-bg:     #FFFFFF;
+  --ghost-fg:     #A82C1E;
+  --bf-a: #F4877A;  --bf-b: #EB4E40;  --bf-c: #C23526;
+  --ember:        #F08A7A;
+  --glow:         235, 110, 90;
+  --flame:        #F0774F;  --flame-core: #FFD27A;  --flame-glow: rgba(240,150,90,0.28);
+  --bell-fill:    url(#bellGrad);
+  --bf-opacity:   0.5;
+  --plate:        1;            /* photograph visibility in this theme */
+
+  /* Three faces, each with a job.
+     Rozha One is display only — it carries no Devanagari digits, so
+     २४/०९/२६ would silently fall back to Latin 24/09/26 in it.
+     Tiro Devanagari Marathi is cut for Marathi orthography and shapes
+     श्री, प्र, त्र and क्त correctly; it ships at one weight, so it is
+     never asked to go bold. Eczar keeps the small labels, where real
+     500/600 weights are needed. */
+  --display: 'Rozha One', 'Tiro Devanagari Marathi', serif;
+  --text:    'Tiro Devanagari Marathi', 'Eczar', Georgia, serif;
+  --serif:   'Eczar', 'Tiro Devanagari Marathi', Georgia, serif;
+  --sans:    'Mukta', system-ui, -apple-system, sans-serif;
+
+  --gutter: 24px;
+  --col: 390px;
+  --ease: cubic-bezier(.2, .65, .3, 1);
+  --ease-soft: cubic-bezier(.33, 1, .68, 1);
+  --theme-t: .5s;
+
+  /* the wipe. A symmetric in-out is what makes a clip edge read as a
+     curtain being drawn rather than something drifting into place. */
+  --move-t: .62s;
+  --move-e: cubic-bezier(.76, 0, .24, 1);
+  --rise: 7svh;                /* how far a view's type travels inside its wipe */
+
+  /* the two panel grounds. Kept outside the theme tokens because a panel
+     is not themed — it *is* the theme arriving. */
+  --ivory-ground: radial-gradient(118% 88% at 50% 20%, #FFFFFF 0%, #FDFBF6 50%, #F3EDE1 100%);
+  --red-ground:   radial-gradient(118% 88% at 50% 16%, #E2503C 0%, #CC3B2A 48%, #A3281A 100%);
+
+  /* driven by app.js */
+  --plate-shift: 0px;  --progress: 0;
+
+  /* idol plate */
+  --photo-opacity: 0.84;
+  --photo-filter: saturate(1.02) brightness(1.03);
+  --plate-top: 28%;
+  --plate-scale: 1.2;
+  --video-opacity: 0.84;
+  --video-filter: saturate(1.02) brightness(1.03);
+}
+
+/* ── theme tokens: vermilion with gold, from the third view on ── */
+.theme-red {
+  --bg:           #CC3B2A;
+  --fg:           #FFF0C8;
+  --fg-soft:      #FFF0C8;
+  --fg-muted:     rgba(255, 240, 200, 0.74);
+  --ac:           #F6C95C;      /* gold — display type, rules (3.3:1 on the red, large only) */
+  --ac-deep:      #F6C95C;
+  --ac-text:      #FFF0C8;      /* cream gold — small text (4.5:1) */
+  --ac-dark:      #FFF6DC;
+  --line:         rgba(246, 201, 92, 0.36);
+  --line-2:       rgba(246, 201, 92, 0.62);
+  --card-bg:      rgba(255, 255, 255, 0.08);
+  --card-icon-bg: rgba(246, 201, 92, 0.14);
+  --btn-fg:       #8F2416;
+  --btn-bg:       #F6C95C;
+  --ghost-bg:     transparent;
+  --ghost-fg:     #FFF0C8;
+  --bf-a: #FFF0C8;  --bf-b: #F6C95C;  --bf-c: #D9A63C;
+  --ember:        #FFE7A8;
+  --glow:         246, 201, 92;
+  --flame:        #F6C95C;  --flame-core: #FFF6DC;  --flame-glow: rgba(255,231,168,0.3);
+  --bell-fill:    url(#bellGradGold);
+  --bf-opacity:   0.42;
+  --plate:        0;
+}
+
+* { box-sizing: border-box; }
+
+/* ═════════════ 1 · the four anchors ═════════════
+   <body> is the only thing that scrolls. Each anchor is one viewport
+   tall and snaps to its own start. `scroll-snap-stop: always` is the
+   whole trick: the browser itself refuses to carry a flick past a
+   snap point, so no wheel guard, momentum timer or gesture heuristic
+   is needed — and none of them can get it wrong. */
+
+/* The snap must live on whatever actually scrolls. <body>'s overflow
+   propagates up to the viewport, which stops <body> from being a scroll
+   container at all — so a scroll-snap-type set there silently applies to
+   nothing. document.scrollingElement is <html>; the snap goes on <html>. */
+html {
+  /* overflow-x lives here too: on <body> it would force body's own
+     overflow-y to `auto`, quietly turning body into a second scroll
+     container nested inside the real one. */
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.anchor {
+  height: 100vh;
+  height: 100svh;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.sprite { position: absolute; width: 0; height: 0; }
+
+/* ───────────── scroll progress ───────────── */
+
+.progress { position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 50; pointer-events: none; }
+.progress__bar {
+  display: block; height: 100%; width: 100%;
+  transform: scaleX(var(--progress)); transform-origin: 0 50%;
+  background: linear-gradient(to right, transparent, var(--ac) 40%, var(--ac-deep));
+  transition: background var(--theme-t) var(--ease-soft);
+  will-change: transform;
+}
+/* the bar is outside the stage, so it takes its colour from the index */
+html[data-view="1"] .progress__bar,
+html[data-view="3"] .progress__bar {
+  background: linear-gradient(to right, transparent, #F6C95C 40%, #FFF0C8);
+}
+
+/* ───────────── ambient stage ───────────── */
+
+.stage__glow {
+  position: absolute; left: 50%; top: 38%;
+  width: 150vmax; height: 130vmax; max-width: 900px; max-height: 900px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(var(--glow), 0.24), rgba(var(--glow), 0.08) 54%, rgba(var(--glow), 0) 80%);
+  animation: glowBreathe 10s ease-in-out infinite;
+  transition: background var(--theme-t) var(--ease-soft);
+}
+
+.stage__photo, .stage__video, .stage__idol {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, calc(-50% + var(--plate-shift))) scale(var(--plate-scale, 1));
+  will-change: transform;
+}
+.stage__photo, .stage__video { top: var(--plate-top); }
+
+.stage__photo, .stage__video {
+  width: 100%; height: 100%; max-width: 540px;
+  object-fit: cover; object-position: center;
+  transition: opacity var(--theme-t) var(--ease-soft);
+  -webkit-mask-image: radial-gradient(ellipse 50% 45% at 50% 48%, #000 0%, #000 30%, rgba(0,0,0,0.55) 62%, transparent 100%);
+          mask-image: radial-gradient(ellipse 50% 45% at 50% 48%, #000 0%, #000 30%, rgba(0,0,0,0.55) 62%, transparent 100%);
+}
+.stage__photo {
+  opacity: calc(var(--photo-opacity) * var(--plate));
+  filter: var(--photo-filter);
+  animation: idolBreathe 16s ease-in-out infinite;
+}
+.stage__video { opacity: 0; filter: var(--video-filter); }
+
+.stage__idol {
+  height: min(80svh, 640px); width: auto; --plate-scale: 1;
+  opacity: 0; filter: blur(0.5px);
+  animation: idolBreathe 13s ease-in-out infinite;
+  transition: opacity var(--theme-t) var(--ease-soft);
+}
+.stage.no-photo .stage__photo { display: none; }
+.stage.no-photo .stage__idol  { opacity: calc(0.55 * var(--plate)); }
+.stage.has-video .stage__video { opacity: calc(var(--video-opacity) * var(--plate)); }
+.stage.has-video .stage__photo, .stage.has-video .stage__idol { opacity: 0; }
+
+.stage__sweep {
+  position: absolute; left: 50%; top: 22%;
+  width: 110vw; max-width: 460px; height: 60svh;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(255,240,236,0.55), rgba(255,240,236,0) 72%);
+  mix-blend-mode: screen;
+  opacity: var(--plate);
+  animation: lightSweep 17s ease-in-out infinite alternate;
+}
+
+/* light over the idol, solid ivory by the time the type begins */
+.stage__veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom,
+              rgba(253,251,246,0.16) 0%, rgba(253,251,246,0.02) 14%, rgba(253,251,246,0.16) 42%,
+              rgba(253,251,246,0.74) 58%, rgba(253,251,246,0.95) 74%, #FDFBF6 84%);
+  box-shadow: inset 0 0 56px 8px rgba(253,251,246,0.45);
+  opacity: var(--plate);
+  transition: opacity var(--theme-t) var(--ease-soft);
+}
+/* the panels do the washing now; this only softens the ground's edges */
+.stage__vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(130% 100% at 50% 40%, transparent 42%, rgba(253,251,246,.55) 82%, #FDFBF6 100%);
+}
+
+/* ───────────── embers ───────────── */
+
+.embers i {
+  position: absolute; left: var(--x); bottom: 14%;
+  width: var(--s); height: var(--s); border-radius: 50%;
+  background: var(--ember); opacity: 0;
+  animation: emberRise var(--dur, 10s) linear infinite; animation-delay: var(--t, 0s);
+  transition: background-color var(--theme-t);
+}
+
+/* ───────────── butterflies ───────────── */
+
+.flutter { position: absolute; inset: 0; }
+
+.bfly {
+  position: absolute; left: var(--x); top: var(--y);
+  width: var(--sz, 40px); aspect-ratio: 640 / 479;
+  display: flex;
+  animation: bDrift 15s ease-in-out infinite; animation-delay: var(--t, 0s);
+  opacity: var(--bf-opacity);
+  filter: blur(0.4px) drop-shadow(0 3px 5px rgba(80, 20, 10, 0.14));
+  transition: opacity var(--theme-t) var(--ease-soft);
+  will-change: transform;
+}
+.bf-half {
+  display: block; width: 50%; height: 100%;
+  background: linear-gradient(135deg, var(--bf-a) 0%, var(--bf-b) 48%, var(--bf-c) 100%);
+  -webkit-mask-image: url("assets/butterfly.png"); mask-image: url("assets/butterfly.png");
+  -webkit-mask-size: 200% 100%; mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  animation: bFlap 1.7s ease-in-out infinite;
+  transition: background var(--theme-t) var(--ease-soft);
+}
+.bf-half--l { -webkit-mask-position: 0 0;    mask-position: 0 0;    transform-origin: 100% 50%; }
+.bf-half--r { -webkit-mask-position: 100% 0; mask-position: 100% 0; transform-origin: 0 50%;
+              background: linear-gradient(225deg, var(--bf-a) 0%, var(--bf-b) 48%, var(--bf-c) 100%); }
+.bfly--b .bf-half { animation-duration: 2.15s; animation-delay: -0.5s; }
+.bfly--c .bf-half { animation-duration: 1.4s;  animation-delay: -0.95s; }
+
+/* ───────────── temple bells ───────────── */
+
+.bell { display: block; width: var(--sz, 40px); height: auto; overflow: visible; }
+.bell__knob    { fill: var(--ac-deep); }
+.bell__body    { fill: var(--bell-fill); stroke: var(--ac-dark); stroke-width: 1.2; stroke-linejoin: round; }
+.bell__shine   { fill: none; stroke: #FFF3EE; stroke-width: 2.4; stroke-linecap: round; opacity: .7; }
+.bell__rim     { fill: var(--ac-deep); stroke: var(--ac-dark); stroke-width: 1; }
+.bell__rod     { stroke: var(--ac-dark); stroke-width: 2.2; stroke-linecap: round; }
+.bell__clapper { fill: var(--ac-dark); }
+
+.bells { position: absolute; inset: 0 0 auto 0; height: 0; z-index: 2; }
+.bell-hang {
+  position: absolute; left: var(--x); top: 0;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  transform-origin: 50% 0;
+  animation: bellSwing 4.6s ease-in-out infinite; animation-delay: var(--t, 0s);
+  filter: drop-shadow(0 6px 10px rgba(143,36,22,0.18));
+}
+.bell-hang--b { animation-duration: 5.4s; }
+.bell-hang__chain { display: block; width: 0; height: var(--len, 70px); border-left: 2px dashed var(--ac-deep); opacity: .8; }
+.bell-hang .bell { margin-top: -6px; }
+
+.drop { display: flex; flex-direction: column; align-items: center; margin: 10px 0 18px; }
+.drop__chain { display: block; width: 0; height: 22px; border-left: 1.5px dashed var(--ac); opacity: .75; }
+.bell--sm { --sz: 18px; margin-top: -3px; }
+
+/* ═════════════ 3 · panels and views ═════════════
+
+   Everything visible is stacked inside the fixed stage and revealed by
+   a clip edge walking up from the bottom. Panel n and view n share one
+   edge, so a view’s ground and its type arrive as a single curtain;
+   panel n+1 then covers both. Scrolling back simply lowers the edge
+   again — which is why this is reversible with no bookkeeping at all.
+
+   z-order interleaves: panel 1, view 1, panel 2, view 2 … so every
+   panel covers the view directly beneath it. */
+
+.stage {
+  position: fixed; inset: 0; z-index: 1;
+  isolation: isolate;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--bg);
+}
+
+.ground { position: absolute; inset: 0; z-index: 0; }
+
+.panel, .view {
+  position: absolute; inset: 0;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path var(--move-t) var(--move-e);
+  will-change: clip-path;
+}
+.panel.is-on, .view.is-on { clip-path: inset(0 0 0 0); }
+
+/* panel 1 is transparent: the idol ground below is view 1’s backdrop */
+.panel--1 { background: none;                z-index: 1; }
+.panel--2 { background: var(--red-ground);   z-index: 3; }
+.panel--3 { background: var(--ivory-ground); z-index: 5; }
+.panel--4 { background: var(--red-ground);   z-index: 7; }
+
+/* a far quieter echo of the idol keeps view 3 from reading as blank paper */
+.panel--3::after {
+  content: ""; position: absolute; inset: 0;
+  background: url(idol.jpeg) center 18% / cover no-repeat;
+  opacity: .06;
+  filter: grayscale(.5) sepia(.35) blur(7px);
+  transform: scale(1.08);      /* hides the blur's soft edge */
+  -webkit-mask-image: radial-gradient(ellipse 62% 48% at 50% 34%, #000 0%, rgba(0,0,0,.5) 58%, transparent 100%);
+          mask-image: radial-gradient(ellipse 62% 48% at 50% 34%, #000 0%, rgba(0,0,0,.5) 58%, transparent 100%);
+}
+
+/* embers and butterflies ride above every panel, so one copy carries
+   across all four views. They sit at the far margins, clear of type. */
+.ambient { position: absolute; inset: 0; z-index: 9; pointer-events: none; }
+
+/* ── paper ──
+   A printed invitation has tooth. One tiled feTurbulence field over the
+   whole stage does more for the material than any amount of shadow. */
+.stage::after {
+  content: ""; position: absolute; inset: 0; z-index: 20;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='180' height='180' filter='url%28%2523n%29'/></svg>" );
+  background-size: 180px 180px;
+  opacity: .055;
+  mix-blend-mode: multiply;
+}
+
+.ambient .bfly, .ambient .embers i { transition: opacity var(--theme-t) var(--ease-soft); }
+
+.view {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: calc(env(safe-area-inset-top, 0px) + 52px) var(--gutter) calc(env(safe-area-inset-bottom, 0px) + 44px);
+  color: var(--fg);
+}
+.view--welcome { z-index: 2; }
+.view--invite  { z-index: 4; }
+.view--details { z-index: 6; }
+.view--closing { z-index: 8; }
+
+/* only the view on top takes clicks */
+.view.is-top { pointer-events: auto; }
+
+/* the type rises a little inside its own wipe — the parallax that
+   keeps the arrival from reading as a flat mask */
+.view__inner {
+  width: 100%; max-width: var(--col); margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center;
+  transform: translateY(var(--rise));
+  transition: transform var(--move-t) var(--move-e);
+  will-change: transform;
+}
+.view.is-on .view__inner { transform: none; }
+.view__inner--center { justify-content: center; text-align: center; }
+
+.view--welcome {
+  /* just enough to clear the ambi above the salutation, which is still
+     held to the upper edge */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 18px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+}
+.view--welcome .view__inner { flex: 1 1 auto; justify-content: space-between; }
+.view--invite  { padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 56px); }
+.view--closing .view__inner { justify-content: center; position: relative; }
+.view--closing { padding-block: calc(env(safe-area-inset-top, 0px) + 60px) calc(env(safe-area-inset-bottom, 0px) + 60px); }
+.view--details { padding-block: calc(env(safe-area-inset-top, 0px) + 64px) calc(env(safe-area-inset-bottom, 0px) + 40px); }
+
+/* ── flowing fallback ──
+   Used in two cases: no script at all (nothing would apply `is-on`, so
+   every view would stay clipped and the page would render blank), and a
+   viewport too short to hold a view (below ~620px). Either way the stage
+   unpins and the four views flow down the page as ordinary sections: no
+   wipes and no snapping, but the whole invitation is there and readable. */
+html:not(.js) .anchor,
+html.flow .anchor,
+html:not(.js) .ground,
+html.flow .ground,
+html:not(.js) .panel,
+html.flow .panel,
+html:not(.js) .ambient,
+html.flow .ambient,
+html:not(.js) .progress,
+html.flow .progress { display: none; }
+
+html:not(.js) .stage,
+html.flow .stage { position: static; overflow: visible; pointer-events: auto; }
+
+html:not(.js) .view,
+html.flow .view {
+  position: static;
+  clip-path: none;
+  min-height: 100svh;
+  background: var(--ivory-ground);
+}
+html:not(.js) .view--welcome,
+html.flow .view--welcome {
+  /* the veil sits over the photograph, as it does in the real view 1 */
+  background:
+    linear-gradient(to bottom, rgba(253,251,246,.18) 0%, rgba(253,251,246,.5) 44%,
+                    rgba(253,251,246,.92) 72%, #FDFBF6 86%),
+    url(idol.jpeg) center 20% / cover no-repeat;
+}
+html:not(.js) .view.theme-red,
+html.flow .view.theme-red { background: var(--red-ground); }
+html:not(.js) .view__inner,
+html.flow .view__inner { transform: none; }
+html:not(.js) .rv,
+html.flow .rv { opacity: 1; transform: none; }
+
+/* ───────────── shared marks ───────────── */
+
+.rule { display: block; height: 1px; width: 52px; background: var(--line-2); transition: background var(--theme-t); }
+.rule--fade-r { background: linear-gradient(to right, transparent, var(--ac)); }
+.rule--fade-l { background: linear-gradient(to left,  transparent, var(--ac)); }
+.rule--fade-both { width: 150px; background: linear-gradient(to right, transparent, var(--ac), transparent); }
+.rule--short { width: 84px; margin: 22px 0; }
+
+/* a three-petal lotus in place of the generic four-point star. The
+   first attempt was a single mango, which at this size read as a
+   blood drop — the fan is what makes it unmistakable. */
+.star { width: 26px; height: 16px; fill: var(--ac); transition: fill var(--theme-t); }
+
+.label {
+  margin: 0; font-family: var(--serif); font-size: 15px; font-weight: 600;
+  letter-spacing: 0.04em; color: var(--ac-text);
+  transition: color var(--theme-t);
+}
+
+/* ───────────── view 1 · स्वागत ───────────── */
+
+.salutation {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  column-gap: 11px; row-gap: 8px; width: 100%; max-width: 240px;
+}
+.salutation__text {
+  grid-column: 1 / -1; margin: 0; text-align: center;
+  font-family: var(--display); font-size: 20px; letter-spacing: 0.04em; color: var(--ac-text);
+}
+.salutation .rule { width: 100%; }
+
+.hero { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+.hero__title {
+  margin: 0; font-family: var(--display);
+  font-size: clamp(30px, 8.8vw, 44px); line-height: 1.3; font-weight: 400;
+  color: var(--ac-deep); text-align: center;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.7);
+}
+
+.swash { display: block; width: min(200px, 56%); height: 24px; margin: 4px 0 18px; fill: var(--ac); transform-origin: 50% 50%; }
+
+.pill {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  width: 100%; margin: 0; padding: 15px 14px;
+  border: 1px solid var(--line-2); border-radius: 3px;
+  background: var(--card-bg); backdrop-filter: blur(3px);
+}
+.pill > div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.pill > div + div { border-left: 1px solid var(--line); padding-left: 14px; }
+.pill dt { font-family: var(--serif); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--ac-text); }
+.pill dd { margin: 0; font-family: var(--text); font-weight: 400; font-size: 19px; color: var(--fg); white-space: nowrap; }
+
+.sender {
+  margin: 16px 0 0; font-family: var(--text); font-weight: 400; font-size: 17px;
+  letter-spacing: 0.01em; color: var(--ac-text); text-align: center;
+}
+
+/* the Ganesha mark standing in for a down arrow */
+.mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 44px; min-height: 44px; margin-top: 18px; padding: 4px 12px; text-decoration: none;
+}
+.mark__glyph {
+  display: block; width: 42px; aspect-ratio: 240 / 489;
+  background: var(--ac-deep);
+  -webkit-mask: url("assets/ganesha-mark.png") center / contain no-repeat;
+          mask: url("assets/ganesha-mark.png") center / contain no-repeat;
+  animation: cueNudge 3.2s ease-in-out infinite;
+  transition: background-color .35s var(--ease);
+}
+.mark:hover .mark__glyph { background: var(--ac); }
+
+/* ───────────── buttons ───────────── */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; min-height: 52px; margin-top: 18px; padding: 0 24px; border-radius: 999px;
+  font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  transition: transform .35s var(--ease), background-color var(--theme-t) var(--ease-soft),
+              color var(--theme-t) var(--ease-soft), border-color var(--theme-t) var(--ease-soft), box-shadow .35s var(--ease);
+}
+.btn:active { transform: scale(0.982); }
+.btn--ghost { border: 1px solid var(--ac-deep); background: var(--ghost-bg); color: var(--ghost-fg); }
+.btn--ghost:hover { box-shadow: 0 6px 22px -14px rgba(0,0,0,.35); }
+.btn--solid { border: 1px solid var(--btn-bg); background: var(--btn-bg); color: var(--btn-fg); }
+.btn--solid:hover { box-shadow: 0 8px 26px -14px rgba(0,0,0,.45); }
+.btn--solid .pin { stroke: var(--btn-fg); }
+
+.chev { width: 13px; height: 13px; fill: none; stroke: var(--ac-deep); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; animation: cueNudge 2.8s ease-in-out infinite; }
+.pin  { width: 16px; height: 16px; fill: none; stroke: var(--ac-deep); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--theme-t); }
+
+/* ───────────── view 2 · आमंत्रण ───────────── */
+
+.prose {
+  margin: 0; font-family: var(--text); font-size: 17px; line-height: 1.95;
+  color: var(--fg-soft); text-align: center; text-wrap: pretty;
+  transition: color var(--theme-t);
+}
+.prose--gold { font-weight: 500; font-size: 18px; line-height: 1.75; color: var(--ac-text); }
+
+/* ───────────── view 3 · तपशील ───────────── */
+
+.cards { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.card {
+  display: flex; align-items: center; gap: 15px; padding: 16px 18px;
+  background: var(--card-bg); border: 1px solid var(--line); border-radius: 4px;
+  backdrop-filter: blur(3px);
+  transition: background-color var(--theme-t) var(--ease-soft), border-color var(--theme-t) var(--ease-soft);
+}
+.card--top { align-items: flex-start; }
+.card__icon {
+  flex: 0 0 auto; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--card-icon-bg); border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  transition: background-color var(--theme-t), border-color var(--theme-t);
+}
+.card__icon svg { width: 20px; height: 20px; fill: none; stroke: var(--ac-deep); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--theme-t); }
+.card__body  { display: flex; flex-direction: column; gap: 3px; }
+.card__label { font-family: var(--serif); font-size: 14px; font-weight: 600; letter-spacing: 0.03em; color: var(--ac-text); transition: color var(--theme-t); }
+.card__value { font-family: var(--text); font-weight: 400; font-size: 22px; line-height: 1.4; color: var(--fg); transition: color var(--theme-t); }
+.card__note  { font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--fg-soft); transition: color var(--theme-t); }
+
+/* ───────────── view 4 · समारोप ───────────── */
+
+.swirl {
+  display: block; width: 40px; aspect-ratio: 110 / 360;
+  background: var(--ac);
+  -webkit-mask: url("assets/ganesh-swirl.png") center / contain no-repeat;
+          mask: url("assets/ganesh-swirl.png") center / contain no-repeat;
+  filter: drop-shadow(0 8px 18px rgba(80, 20, 10, 0.25));
+}
+
+/* ── rangoli ──
+   A sixteen-petal kolam behind the closing mark: the one piece of pure
+   ornament on the page, kept faint enough to read as a watermark. */
+.rangoli {
+  position: absolute; left: 50%; top: 50%;
+  width: min(74vw, 300px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  fill: none; stroke: var(--ac); stroke-width: 1.1;
+  opacity: .17; pointer-events: none;
+  animation: rangoliTurn 90s linear infinite;
+  transition: stroke var(--theme-t);
+}
+@keyframes rangoliTurn { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+
+
+
+/* ───────────── reveal on scroll ───────────── */
+
+.rv { opacity: 0; transform: translateY(22px);
+      transition: opacity .7s var(--ease-soft) calc(var(--d, 0s) * .55),
+                  transform .7s var(--ease-soft) calc(var(--d, 0s) * .55); }
+.rv.in { opacity: 1; transform: none; }
+.rv--drop { transform: scaleY(0); transform-origin: 50% 0; }
+.rv--draw { transform: scaleX(0); }
+.rv--drop.in, .rv--draw.in { transform: none; }
+
+/* ───────────── keyframes ───────────── */
+
+@keyframes bFlap { 0% { transform: scaleX(1); } 42% { transform: scaleX(0.42); } 100% { transform: scaleX(1); } }
+@keyframes bDrift {
+  0%   { transform: translate(0, 0) rotate(-2deg); }
+  25%  { transform: translate(15px, -15px) rotate(2deg); }
+  50%  { transform: translate(25px, -33px) rotate(-1deg); }
+  75%  { transform: translate(9px, -19px) rotate(3deg); }
+  100% { transform: translate(0, 0) rotate(-2deg); }
+}
+@keyframes bellSwing { 0%, 100% { transform: translateX(-50%) rotate(-3.5deg); } 50% { transform: translateX(-50%) rotate(3.5deg); } }
+@keyframes glowBreathe { 0%, 100% { opacity: .6; transform: translate(-50%, -50%) scale(1); } 50% { opacity: .9; transform: translate(-50%, -50%) scale(1.07); } }
+@keyframes idolBreathe {
+  0%, 100% { transform: translate(-50%, calc(-50% + var(--plate-shift))) scale(var(--plate-scale, 1)); }
+  50%      { transform: translate(-50%, calc(-50% + var(--plate-shift))) scale(calc(var(--plate-scale, 1) * 1.022)); }
+}
+@keyframes lightSweep { 0% { transform: translateX(calc(-50% - 7%)); } 100% { transform: translateX(calc(-50% + 7%)); } }
+@keyframes emberRise { 0% { transform: translateY(0) scale(.5); opacity: 0; } 14% { opacity: .7; } 100% { transform: translateY(-220px) scale(1); opacity: 0; } }
+@keyframes cueNudge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+/* ── gold ──
+   #F6C95C on its own is just yellow. The mark is a mask over a fill,
+   so the metal is a gradient with a specular band — held still now
+   that the mark itself is the only thing on the closing view that
+   does not move. */
+.theme-red .swirl {
+  background: linear-gradient(140deg, #D9A63C 0%, #F6C95C 20%, #FFF6DC 38%,
+                              #F6C95C 56%, #D9A63C 74%, #FFF6DC 100%);
+  background-size: 200% 200%;
+  background-position: 30% 50%;
+}
+
+
+/* ───────────── wider screens ───────────── */
+
+@media (min-width: 560px) {
+  :root { --col: 420px; }
+  .hero__title { font-size: 52px; }
+  .bell-hang { --x: calc(50% + (var(--x) - 50%) * 0.5); }
+}
+@media (min-width: 900px) { .stage__glow { max-width: 1100px; max-height: 1000px; } }
+
+/* Short viewports just tighten up; the views still fit down to ~660px.
+
+   The top view must never be given `overflow-y: auto` to cope with this.
+   A fixed, full-viewport scroll container whose content happens to fit
+   has nothing to scroll and swallows the gesture instead of chaining it
+   out to the page — which freezes the entire site. Below 620px, where
+   the content genuinely will not fit, `html.flow` is used instead. */
+@media (max-height: 700px) {
+  :root { --rise: 3svh; }
+  .view { padding-block: calc(env(safe-area-inset-top, 0px) + 26px) calc(env(safe-area-inset-bottom, 0px) + 22px); }
+}
+
+/* ───────────── reduced motion ───────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --move-t: .001s; --rise: 0px; }
+  html { scroll-behavior: auto; scroll-snap-type: none; }
+  .rv { opacity: 1; transform: none; transition: none; }
+  .panel, .view, .view__inner { transition: none; }
+  .stage__glow, .stage__photo, .stage__idol, .stage__sweep, .embers i, .bfly, .bf-half,
+  .bell-hang, .chev, .mark__glyph, .swirl,   .embers i { opacity: 0; }
+  .stage__photo, .stage__video, .btn { transition: none; }
+}
