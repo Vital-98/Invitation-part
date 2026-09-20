@@ -1,0 +1,215 @@
+/* ───────────────────────────────────────────────────────────────
+   महाप्रसाद आमंत्रण — the print card.
+
+   One A4 page. The ornament is the supplied frame (frame.jpg); all
+   this sheet does is set type inside the clear middle of it.
+
+   The safe box below is measured, not guessed: the frame's floral
+   cluster reaches x≤20% down to y=15% at the top-left, and rises to
+   y=81% at x=80% on the bottom-right. Everything here lives inside
+   18%–82% horizontally and 15.4%–86.8% vertically, where the paper is
+   clear on both diagonals. The sender line is held to 92mm so that the
+   lowest row stays inside the 72% column, well clear of that spray.
+
+   Colours are sampled from frame.jpg itself, so the type belongs to
+   the border rather than sitting on top of it.
+   ─────────────────────────────────────────────────────────────── */
+
+:root {
+  --navy:      #1B3353;   /* sampled: the frame's leaves           */
+  --navy-deep: #12233C;   /* display type, a shade under the leaf  */
+  --navy-soft: #43536F;   /* secondary notes                       */
+  --gold:      #BA9762;   /* sampled: the frame's rules and scroll */
+  --gold-deep: #9A7A48;   /* small gold type, for contrast on cream */
+  --gold-pale: rgba(186, 151, 98, 0.42);
+
+  --display: 'Rozha One', 'Tiro Devanagari Marathi', serif;
+  --text:    'Tiro Devanagari Marathi', 'Eczar', Georgia, serif;
+  --serif:   'Eczar', 'Tiro Devanagari Marathi', Georgia, serif;
+}
+
+@page { size: A4 portrait; margin: 0; }
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  width: 210mm;
+  height: 297mm;
+  position: relative;
+  background: #FDF9F6 url("frame.jpg") center / 100% 100% no-repeat;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+  font-family: var(--text);
+  color: var(--navy);
+  text-rendering: geometricPrecision;
+}
+
+/* the clear middle of the frame */
+.card {
+  position: absolute;
+  left: 18%;  right: 18%;
+  top: 15.4%; bottom: 13.2%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+}
+
+/* ── 1 · invocation ───────────────────────────────────────────── */
+.salutation {
+  display: flex;
+  align-items: center;
+  gap: 3.2mm;
+  width: 100%;
+  justify-content: center;
+}
+.salutation .rule {
+  flex: 1 1 auto;
+  max-width: 17mm;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold));
+}
+.salutation .rule--r { background: linear-gradient(90deg, var(--gold), transparent); }
+.salutation__text {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+.star { width: 7mm; height: auto; fill: var(--gold); flex: none; }
+
+/* ── 2 · the title ────────────────────────────────────────────── */
+.hero { margin-top: 5mm; }
+.hero__title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 33pt;
+  line-height: 1.16;
+  letter-spacing: 0.005em;
+  color: var(--navy-deep);
+}
+.swash {
+  display: block;
+  width: 58mm;
+  margin: 4.5mm auto 0;
+  fill: var(--gold);
+}
+
+/* ── 3 · the body ─────────────────────────────────────────────── */
+.prose {
+  margin: 0;
+  font-family: var(--text);
+  font-weight: 400;
+  font-size: 11.4pt;
+  line-height: 1.95;
+  color: var(--navy);
+  max-width: 122mm;
+}
+.prose--gold {
+  margin-top: 5mm;
+  font-size: 11.8pt;
+  line-height: 1.7;
+  color: var(--gold-deep);
+  max-width: 104mm;
+}
+
+/* a hairline with a lozenge at its centre */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.6mm;
+  width: 76mm;
+  margin: 5.5mm auto 0;
+}
+.divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-pale), transparent);
+}
+.divider i {
+  width: 2.4mm; height: 2.4mm;
+  background: var(--gold);
+  transform: rotate(45deg);
+  flex: none;
+}
+
+/* ── 4 · date, time, place ────────────────────────────────────── */
+.details {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 120mm;
+}
+.details li + li {
+  margin-top: 4.6mm;
+  padding-top: 4.6mm;
+  border-top: 1px dotted var(--gold-pale);
+}
+.detail__label {
+  display: block;
+  font-family: var(--serif);
+  font-size: 9pt;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gold-deep);
+}
+.detail__value {
+  display: block;
+  margin-top: 1.4mm;
+  font-family: var(--text);
+  font-size: 14pt;
+  line-height: 1.34;
+  color: var(--navy-deep);
+}
+.detail__note {
+  display: block;
+  margin-top: 0.8mm;
+  font-family: var(--serif);
+  font-size: 9.6pt;
+  line-height: 1.45;
+  color: var(--navy-soft);
+}
+
+/* ── 5 · the sender ───────────────────────────────────────────── */
+.sender {
+  margin: 0;
+  max-width: 92mm;          /* stays clear of the lower-right spray */
+  font-family: var(--text);
+  font-size: 11pt;
+  line-height: 1.5;
+  color: var(--navy);
+}
+.sender em {
+  display: block;
+  font-style: normal;
+  font-family: var(--serif);
+  font-size: 9pt;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--gold-deep);
+  margin-bottom: 1.8mm;
+}
+
+/* ── the English cut ──────────────────────────────────────────────
+   Latin needs a touch less size and a little more letter-spacing to
+   hold the same optical weight as the Devanagari.
+   ─────────────────────────────────────────────────────────────── */
+.en .hero__title   { font-size: 30pt; letter-spacing: 0.012em; }
+.en .prose         { font-family: var(--serif); font-size: 10.8pt; line-height: 1.85; }
+.en .prose--gold   { font-size: 11pt; }
+.en .detail__value { font-family: var(--serif); font-size: 13pt; }
+.en .sender        { font-family: var(--serif); font-size: 10.6pt; }
+.en .salutation__text { letter-spacing: 0.14em; }
+
+/* Latin carries wide tracking on the small gold labels; Devanagari cannot. */
+.en .detail__label,
+.en .sender em { font-size: 8.6pt; letter-spacing: 0.22em; text-transform: uppercase; }
