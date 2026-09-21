@@ -10,9 +10,12 @@
    heuristic, so there is nothing left to tune or to get wrong.
    ─────────────────────────────────────────────── */
 
-/* ▸ Paste the exact Google Maps pin for "सुधानंद" here.
-     Until then this falls back to a map search for the address. */
-const MAP_URL = '';
+/* The exact Google Maps pin for "सुधानंद".
+   It resolves to 21.115528, 79.107259 — kept written down here because
+   goo.gl short links are on Google's deprecation list, so if this one
+   ever stops resolving, swap in the coordinate form:
+   https://www.google.com/maps/search/?api=1&query=21.115528,79.107259 */
+const MAP_URL = 'https://goo.gl/maps/s25ybdKTFqTCCTAf7?g_st=aw';
 const MAP_FALLBACK =
   'https://www.google.com/maps/search/?api=1&query=' +
   encodeURIComponent('Juna Subhedar Layout Extension, Nagpur 440024');

@@ -30,17 +30,22 @@
   --bf-opacity:   0.5;
   --plate:        1;            /* photograph visibility in this theme */
 
-  /* Three faces, each with a job.
-     Rozha One is display only — it carries no Devanagari digits, so
-     २४/०९/२६ would silently fall back to Latin 24/09/26 in it.
-     Tiro Devanagari Marathi is cut for Marathi orthography and shapes
-     श्री, प्र, त्र and क्त correctly; it ships at one weight, so it is
-     never asked to go bold. Eczar keeps the small labels, where real
-     500/600 weights are needed. */
-  --display: 'Rozha One', 'Tiro Devanagari Marathi', serif;
-  --text:    'Tiro Devanagari Marathi', 'Eczar', Georgia, serif;
-  --serif:   'Eczar', 'Tiro Devanagari Marathi', Georgia, serif;
-  --sans:    'Mukta', system-ui, -apple-system, sans-serif;
+  /* Arya carries the whole page; Rozha One is kept for the one thing
+     asked to stay as it was, the main header — it carries no Devanagari
+     digits, so २४/०९/२६ would fall back to Latin 24/09/26 in it, which
+     is why it is display-only.
+
+     Arya does not form ra-conjuncts: it renders श्र as श + a full र
+     and त्र as त + a full र, instead of tucking the ra beneath the
+     base letter. In running prose that reads as a quirk of the face,
+     but in श्री it changes the letter — the salutation came out as
+     ड्री. So the two lines that carry श्री keep Tiro, which is cut for
+     Marathi and shapes it correctly. Everything else is Arya. */
+  --display:    'Rozha One', serif;                      /* main header only */
+  --invocation: 'Tiro Devanagari Marathi', serif;         /* the two श्री lines */
+  --text:       'Arya', 'Tiro Devanagari Marathi', serif;
+  --serif:      'Arya', 'Tiro Devanagari Marathi', serif;
+  --sans:       'Arya', system-ui, -apple-system, sans-serif;
 
   --gutter: 24px;
   --col: 390px;
@@ -447,7 +452,7 @@ html.flow .rv { opacity: 1; transform: none; }
 .star { width: 26px; height: 16px; fill: var(--ac); transition: fill var(--theme-t); }
 
 .label {
-  margin: 0; font-family: var(--serif); font-size: 15px; font-weight: 600;
+  margin: 0; font-family: var(--serif); font-size: 15px; font-weight: 700;
   letter-spacing: 0.04em; color: var(--ac-text);
   transition: color var(--theme-t);
 }
@@ -460,7 +465,7 @@ html.flow .rv { opacity: 1; transform: none; }
 }
 .salutation__text {
   grid-column: 1 / -1; margin: 0; text-align: center;
-  font-family: var(--display); font-size: 20px; letter-spacing: 0.04em; color: var(--ac-text);
+  font-family: var(--invocation); font-size: 21px; letter-spacing: 0.02em; color: var(--ac-text);
 }
 .salutation .rule { width: 100%; }
 
@@ -483,11 +488,11 @@ html.flow .rv { opacity: 1; transform: none; }
 }
 .pill > div { display: flex; flex-direction: column; align-items: center; gap: 2px; }
 .pill > div + div { border-left: 1px solid var(--line); padding-left: 14px; }
-.pill dt { font-family: var(--serif); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--ac-text); }
+.pill dt { font-family: var(--serif); font-size: 12px; font-weight: 700; letter-spacing: 0.02em; color: var(--ac-text); }
 .pill dd { margin: 0; font-family: var(--text); font-weight: 400; font-size: 19px; color: var(--fg); white-space: nowrap; }
 
 .sender {
-  margin: 16px 0 0; font-family: var(--text); font-weight: 400; font-size: 17px;
+  margin: 16px 0 0; font-family: var(--invocation); font-weight: 400; font-size: 17px;
   letter-spacing: 0.01em; color: var(--ac-text); text-align: center;
 }
 
@@ -511,7 +516,7 @@ html.flow .rv { opacity: 1; transform: none; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
   width: 100%; min-height: 52px; margin-top: 18px; padding: 0 24px; border-radius: 999px;
-  font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: 0.02em; text-decoration: none;
+  font-family: var(--serif); font-size: 17px; font-weight: 700; letter-spacing: 0.02em; text-decoration: none;
   transition: transform .35s var(--ease), background-color var(--theme-t) var(--ease-soft),
               color var(--theme-t) var(--ease-soft), border-color var(--theme-t) var(--ease-soft), box-shadow .35s var(--ease);
 }
@@ -552,7 +557,7 @@ html.flow .rv { opacity: 1; transform: none; }
 }
 .card__icon svg { width: 20px; height: 20px; fill: none; stroke: var(--ac-deep); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; transition: stroke var(--theme-t); }
 .card__body  { display: flex; flex-direction: column; gap: 3px; }
-.card__label { font-family: var(--serif); font-size: 14px; font-weight: 600; letter-spacing: 0.03em; color: var(--ac-text); transition: color var(--theme-t); }
+.card__label { font-family: var(--serif); font-size: 14px; font-weight: 700; letter-spacing: 0.03em; color: var(--ac-text); transition: color var(--theme-t); }
 .card__value { font-family: var(--text); font-weight: 400; font-size: 22px; line-height: 1.4; color: var(--fg); transition: color var(--theme-t); }
 .card__note  { font-family: var(--serif); font-size: 15px; line-height: 1.5; color: var(--fg-soft); transition: color var(--theme-t); }
 
